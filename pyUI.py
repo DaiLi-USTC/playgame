@@ -10,7 +10,9 @@ class PyUI(object):
         self.ground_image=['' for i in range(0,256)]
         self.ground_image[Mtype.GRASS] = pygame.image.load('resources/grass.png')#图像注册
         self.ground_image[Mtype.MONTAIN1] = pygame.image.load('resources/mountain1.png')
-        self.ground_image[Mtype.HERO] = pygame.image.load('resources/hero.png')
+        self.ground_image[Mtype.WALL1] = pygame.image.load('resources/wall1.png')
+        self.ground_image[Mtype.WALL2] = pygame.image.load('resources/wall2.png')
+        #self.ground_image[Mtype.HERO] = pygame.image.load('resources/hero.png')
         self.view_moving = 0 #0：静止，1-4上下左右
         self.view_moving_rate = 10
         self.draging_x = 0
@@ -135,8 +137,9 @@ class PyUI(object):
                 for j in range(world.map.view_y//bl,min(world.map.view_y//bl+y_num,world.map.map_height)):
                     if i>= 0 and j>= 0:
                         screen.blit(pygame.transform.scale(self.ground_image[world.map.node[i][j].type],(bl,bl)),self.pos_transform_wts(i,j,world.map))#绘制地图
-            world.me.update_action(world.map, setting)
-            screen.blit(pygame.transform.scale(self.ground_image[255],(bl,bl)), Rect(self.float2Screen(world.me.posx_float,world.me.posy_float,world.map),(bl,bl)))#绘制主角
+            for person in world.map.persons:
+                person.update_action(world.map, setting)
+                screen.blit(pygame.transform.scale(person.img,(bl,bl)), Rect(self.float2Screen(person.posx_float,person.posy_float,world.map),(bl,bl)))#绘制人物
             if tick - self.old_tip_tick > 500:
                 self.tip_board = self.tip_font.render("FPS:%.2f"%(1000/(tick - self.old_tick)), True, (0, 0, 255))
                 self.old_tip_tick = tick

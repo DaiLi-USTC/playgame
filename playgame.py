@@ -12,38 +12,25 @@ from pyUI import PyUI
 def new_start(setting,screen):
     ui = PyUI(setting)
     world = World(setting)
-    while world.state.time < 3:
-        while True:
-            world.should_add_time = 0
-            ui.wait_op(screen,world,setting)
-            command_str = ''
-            if world.me.motion != Motion.NOTHING:
-                continue
-            if world.me.directing: #若主角指令非空
-                command_str = world.me.directing.pop()
-            if command_str == '':
-                continue
-            command = command_str.split()
-            print(command)
-            if command[0]=='exit':
-                sys.exit()
-            elif command[0]=='move_to':
-                tar_x = int(command[1])
-                tar_y = int(command[2])
-                rs = world.me.move_to(tar_x,tar_y,world.map)
-            elif command[0] == 'find_way':
-                tar = (int(command[1]),int(command[2]))
-                rs = world.me.find_way((world.me.posx,world.me.posy),tar,world.map)
-            elif command[0] == 'move':
-                direction = int(command[1])
-                rs = world.me.move(direction,world)
-            if rs == False:
-                continue
-            #if rs:
-                #ui.action(command,screen,world,setting)#播放动画
-            if world.should_add_time:
-                print('现在时间:%d年%d月%d日'%(world.state.get_year(),world.state.get_month(),world.state.get_day()))
-                world.state.day_add()
+    while True:
+        world.should_add_time = 0
+        ui.wait_op(screen,world,setting)
+        if world.me.motion != Motion.NOTHING:
+            continue
+        rs = False
+        if world.me.directing: #若主角指令非空，主角尝试行动
+            rs = world.me.excute_direct(world)
+        else:
+            continue
+        if rs == True and world.should_add_time:#若主角指令执行成功，轮到AI行动
+            for person in world.map.persons:
+                if person == world.me:
+                    continue
+                else:
+                    person.excute_AI(world.map)
+                    person.excute_direct(world)
+            #print('现在时间:%d年%d月%d日'%(world.state.get_year(),world.state.get_month(),world.state.get_day()))
+            world.state.day_add()
     print('剧终')
 
 def main():

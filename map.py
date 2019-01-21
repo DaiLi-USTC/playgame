@@ -5,6 +5,8 @@ import json
 class Mtype(IntEnum):
     GRASS = 1
     MONTAIN1 = 11
+    WALL1 = 31
+    WALL2 = 32
     HERO = 255
 
 
@@ -26,7 +28,7 @@ class Map(object):
         self.view_x = 0
         self.view_y = 0
         self.init_map(setting,map_name)#读入地图数据
-        self.objs = []
+        self.persons = []
 
     def set_node(self,posx,posy,type):
         self.node[posx][posy] = type
@@ -46,7 +48,7 @@ class Map(object):
                 self.block_len += self.block_len_change
                 self.view_x = self.view_x * self.block_len - mouse_pos[0] + self.block_len // 2
                 self.view_y = self.view_y * self.block_len - mouse_pos[1] + self.block_len // 2
-            for obj in self.objs:
+            for obj in self.persons:
                 obj.posx_float = obj.posx * self.block_len
                 obj.posy_float = obj.posy * self.block_len
         elif method ==2:#缩小
@@ -55,21 +57,21 @@ class Map(object):
                 self.block_len -= self.block_len_change
                 self.view_x = self.view_x * self.block_len - mouse_pos[0] + self.block_len // 2
                 self.view_y = self.view_y * self.block_len - mouse_pos[1] + self.block_len // 2
-            for obj in self.objs:
+            for obj in self.persons:
                 obj.posx_float = obj.posx * self.block_len
                 obj.posy_float = obj.posy * self.block_len
 
     def add(self,obj):
         obj.posx_float = obj.posx * self.block_len
         obj.posy_float = obj.posy * self.block_len
-        self.objs.append(obj)
+        self.persons.append(obj)
 
     def init_map(self,setting,filename):
         with open(filename, "r", encoding='utf-8') as file:
             aa = json.loads(file.read())
             file.seek(0)
             cache = json.load(file)  # 与 json.loads(f.read())
-        print(cache)
+        #print(cache)
         self.map_width = cache['map_width']
         self.map_height = cache['map_height']
         self.node = [[Node(cache['default_type']) for i in range(self.map_height)] for j in range(self.map_width)]  # 初始化为草原
