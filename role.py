@@ -22,6 +22,9 @@ class Role(object):
         self.directing_num = 0  #角色指令序列数目
         self.directing = []
         self.img = None
+        self.main_role_flag = False #主角光环
+        self.road_drag = 1 #受到道路的阻力
+        self.speed = 1.0
 
     def set_img(self,filename):
         self.img = pygame.image.load(filename)
@@ -33,27 +36,27 @@ class Role(object):
     def update_action(self,map,setting):#每帧更新动作状态
         if self.motion == Motion.MOVING:
             if self.motion_param == Motion.DIREC_UP:
-                self.posy_float -= map.block_len / setting.action_frame_num * setting.action_rate
+                self.posy_float -= map.block_len  * self.speed / self.road_drag / setting.drag_rate
                 if self.posy_float <= self.posy * map.block_len:
                     self.posy_float = self.posy * map.block_len
                     self.motion = Motion.NOTHING
             elif self.motion_param == Motion.DIREC_DOWN:
-                self.posy_float += map.block_len / setting.action_frame_num * setting.action_rate
+                self.posy_float += map.block_len  * self.speed  / self.road_drag / setting.drag_rate
                 if self.posy_float >= self.posy * map.block_len:
                     self.posy_float = self.posy * map.block_len
                     self.motion = Motion.NOTHING
             elif self.motion_param == Motion.DIREC_LEFT:
-                self.posx_float -= map.block_len / setting.action_frame_num * setting.action_rate
+                self.posx_float -= map.block_len  * self.speed  / self.road_drag / setting.drag_rate
                 if self.posx_float <= self.posx * map.block_len:
                     self.posx_float = self.posx * map.block_len
                     self.motion = Motion.NOTHING
             elif self.motion_param == Motion.DIREC_RIGHT:
-                self.posx_float += map.block_len / setting.action_frame_num * setting.action_rate
+                self.posx_float += map.block_len * self.speed  / self.road_drag / setting.drag_rate
                 if self.posx_float >= self.posx * map.block_len:
                     self.posx_float = self.posx * map.block_len
                     self.motion = Motion.NOTHING
 
-    def excute_direct(self,world):
+    def excute_direct(self,world):#执行指令栈中的指令
         rs = False
         if self.directing:
             command_str = self.directing.pop()
@@ -152,15 +155,19 @@ class Role(object):
             return False
         self.motion = Motion.MOVING
         if direction == 1 and self.posy-1>=0 and world.map.node[self.posx][self.posy].u_w > 0 and world.map.node[self.posx][self.posy-1].d_w > 0:#上
+            self.road_drag = world.map.node[self.posx][self.posy].u_w + world.map.node[self.posx][self.posy - 1].d_w
             self.posy -= 1
             self.motion_param = Motion.DIREC_UP
         elif direction == 2 and self.posy+1<world.map.map_height and world.map.node[self.posx][self.posy].d_w > 0 and world.map.node[self.posx][self.posy+1].u_w > 0:#下
+            self.road_drag = world.map.node[self.posx][self.posy].d_w + world.map.node[self.posx][self.posy + 1].u_w
             self.posy += 1
             self.motion_param = Motion.DIREC_DOWN
         elif direction == 3 and self.posx-1>=0 and world.map.node[self.posx][self.posy].l_w > 0 and world.map.node[self.posx-1][self.posy].r_w > 0:#左
+            self.road_drag = world.map.node[self.posx][self.posy].l_w + world.map.node[self.posx - 1][self.posy].r_w
             self.posx -= 1
             self.motion_param = Motion.DIREC_LEFT
         elif direction == 4 and self.posx+1<world.map.map_width and world.map.node[self.posx][self.posy].r_w > 0 and world.map.node[self.posx+1][self.posy].l_w > 0:#右
+            self.road_drag = world.map.node[self.posx][self.posy].r_w + world.map.node[self.posx + 1][self.posy].l_w
             self.posx += 1
             self.motion_param = Motion.DIREC_RIGHT
         else:
@@ -201,10 +208,11 @@ class NPC(Role):
         self.target = target
 
     def excute_AI(self,map):
-        if self.AI == AI_type.PATROL:#巡逻参数
-            if self.posx == self.AI_param1[0] and self.posy == self.AI_param1[1]:#若到达巡逻A点，走向巡逻B点
-                self.find_way((self.posx,self.posy),(self.AI_param2[0],self.AI_param2[1]),map)
-            elif self.posx == self.AI_param2[0] and self.posy == self.AI_param2[1]:#若到达巡逻B点，走向巡逻A点
-                self.find_way((self.posx,self.posy),(self.AI_param1[0],self.AI_param1[1]),map)
-            elif not self.directing:
-                self.find_way((self.posx, self.posy), (self.AI_param1[0], self.AI_param1[1]), map)
+        if (not self.directing) and self.motion == Motion.NOTHING:#若AI角色非任务状态
+            if self.AI == AI_type.PATROL:#巡逻参数
+                if self.posx == self.AI_param1[0] and self.posy == self.AI_param1[1]:#若到达巡逻A点，走向巡逻B点
+                    self.find_way((self.posx,self.posy),(self.AI_param2[0],self.AI_param2[1]),map)
+                elif self.posx == self.AI_param2[0] and self.posy == self.AI_param2[1]:#若到达巡逻B点，走向巡逻A点
+                    self.find_way((self.posx,self.posy),(self.AI_param1[0],self.AI_param1[1]),map)
+                elif not self.directing:
+                    self.find_way((self.posx, self.posy), (self.AI_param1[0], self.AI_param1[1]), map)

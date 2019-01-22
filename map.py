@@ -4,13 +4,14 @@ import json
 
 class Mtype(IntEnum):
     GRASS = 1
+    DESERT = 10
     MONTAIN1 = 11
     WALL1 = 31
     WALL2 = 32
     HERO = 255
 
 
-class Node(object):
+class Node(object):#地图格子节点
     def __init__(self,type = Mtype.GRASS, u_w = 1, d_w = 1, l_w = 1, r_w = 1):
         self.type = type
         self.u_w = u_w#各方向权值
@@ -48,18 +49,18 @@ class Map(object):
                 self.block_len += self.block_len_change
                 self.view_x = self.view_x * self.block_len - mouse_pos[0] + self.block_len // 2
                 self.view_y = self.view_y * self.block_len - mouse_pos[1] + self.block_len // 2
-            for obj in self.persons:
-                obj.posx_float = obj.posx * self.block_len
-                obj.posy_float = obj.posy * self.block_len
+                for person in self.persons:
+                    person.posx_float = person.posx_float / (self.block_len - self.block_len_change) * self.block_len
+                    person.posy_float = person.posy_float / (self.block_len - self.block_len_change) * self.block_len
         elif method ==2:#缩小
             if self.block_len > self.block_len_change:
                 self.view_x, self.view_y = self.pos_transform_stw(mouse_pos[0], mouse_pos[1])
                 self.block_len -= self.block_len_change
                 self.view_x = self.view_x * self.block_len - mouse_pos[0] + self.block_len // 2
                 self.view_y = self.view_y * self.block_len - mouse_pos[1] + self.block_len // 2
-            for obj in self.persons:
-                obj.posx_float = obj.posx * self.block_len
-                obj.posy_float = obj.posy * self.block_len
+                for person in self.persons:
+                    person.posx_float = person.posx_float / (self.block_len + self.block_len_change) * self.block_len
+                    person.posy_float = person.posy_float / (self.block_len + self.block_len_change) * self.block_len
 
     def add(self,obj):
         obj.posx_float = obj.posx * self.block_len

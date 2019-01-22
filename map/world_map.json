@@ -381,6 +381,87 @@
             "down_weight": 2,
             "left_weight": -1,
             "right_weight": -1
+        },
+		{
+            "posx": 3,
+            "posy": 3,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
+        },
+		{
+            "posx": 4,
+            "posy": 3,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
+        },
+		{
+            "posx": 5,
+            "posy": 3,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
+        },
+		{
+            "posx": 3,
+            "posy": 4,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
+        },
+		{
+            "posx": 4,
+            "posy": 4,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
+        },
+		{
+            "posx": 5,
+            "posy": 4,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
+        },
+		{
+            "posx": 3,
+            "posy": 5,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
+        },
+		{
+            "posx": 4,
+            "posy": 5,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
+        },
+		{
+            "posx": 5,
+            "posy": 5,
+            "type": 10,
+            "up_weight": 4,
+            "down_weight": 4,
+            "left_weight": 4,
+            "right_weight": 4
         }
     ]
 }

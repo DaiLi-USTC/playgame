@@ -10,9 +10,9 @@ class PyUI(object):
         self.ground_image=['' for i in range(0,256)]
         self.ground_image[Mtype.GRASS] = pygame.image.load('resources/grass.png')#图像注册
         self.ground_image[Mtype.MONTAIN1] = pygame.image.load('resources/mountain1.png')
+        self.ground_image[Mtype.DESERT] = pygame.image.load('resources/desert.png')
         self.ground_image[Mtype.WALL1] = pygame.image.load('resources/wall1.png')
         self.ground_image[Mtype.WALL2] = pygame.image.load('resources/wall2.png')
-        #self.ground_image[Mtype.HERO] = pygame.image.load('resources/hero.png')
         self.view_moving = 0 #0：静止，1-4上下左右
         self.view_moving_rate = 10
         self.draging_x = 0
@@ -23,8 +23,6 @@ class PyUI(object):
         self.old_tip_tick = pygame.time.get_ticks()
         self.tip_font = pygame.font.SysFont('SimHei', 20)
         self.tip_board = self.tip_font.render("FPS:" , True, (0, 0, 255))
-        #self.canvas = pygame.Surface(setting.window_width,setting.window_height)#屏幕画布
-        #self.view_objs = pygame.Group()
 
     def pos_transform_wts(self,mapx,mapy,map):#根据视点将绝对坐标转换为屏幕坐标
         len = map.block_len
@@ -118,7 +116,7 @@ class PyUI(object):
 
         self.view_check(world.map, setting)
         self.move_view(world.map,setting)
-        self.update_screen(screen,world,setting)
+        #self.update_screen(screen,world,setting)
         return command_str
 
     def float2Screen(self,posx_f,posy_f,map):#浮点坐标转屏幕坐标
@@ -138,9 +136,8 @@ class PyUI(object):
                     if i>= 0 and j>= 0:
                         screen.blit(pygame.transform.scale(self.ground_image[world.map.node[i][j].type],(bl,bl)),self.pos_transform_wts(i,j,world.map))#绘制地图
             for person in world.map.persons:
-                person.update_action(world.map, setting)
                 screen.blit(pygame.transform.scale(person.img,(bl,bl)), Rect(self.float2Screen(person.posx_float,person.posy_float,world.map),(bl,bl)))#绘制人物
-            if tick - self.old_tip_tick > 500:
+            if tick - self.old_tip_tick > 500:#更新帧率显示
                 self.tip_board = self.tip_font.render("FPS:%.2f"%(1000/(tick - self.old_tick)), True, (0, 0, 255))
                 self.old_tip_tick = tick
             screen.blit(self.tip_board, (setting.window_width-200,0,100,100))

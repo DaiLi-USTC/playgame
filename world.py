@@ -9,6 +9,7 @@ class World(object):
         self.state = State(setting)
         self.me =  Role(1,1,'猪脚')
         self.me.set_attr(1,1000)
+        self.me.speed = 1.2
         self.me.set_img('resources/person/hero.png')
         self.me.check()
         self.map.add(self.me)
