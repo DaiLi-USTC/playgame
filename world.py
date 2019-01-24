@@ -1,17 +1,19 @@
 from common import Setting,State
 from map import Map
-from role import Role,NPC
+from role import Role,Main_role,NPC
 from AI import AI_type
+import json
 
 class World(object):
     def __init__(self,setting):#世界的生成，主角初始化
         self.map = Map(setting)
+        self.init_position(self.map,'map/world_position.json')
         self.state = State(setting)
-        self.me =  Role(1,1,'猪脚')
+        self.me = Main_role(1,1,'猪脚')
         self.me.set_attr(1,1000)
         self.me.speed = 1.2
         self.me.set_img('resources/person/hero.png')
-        self.me.check()
+        #self.me.check()
         self.map.add(self.me)
         self.should_add_time = 0
         self.npc1 = NPC(15,14,'士兵1')
@@ -34,4 +36,13 @@ class World(object):
         self.npc4.set_img('resources/person/soldier.png')
         self.npc4.set_AI(AI_type.PATROL, (21, 9), (21, 19))
         self.map.add(self.npc4)
+
+    def init_position(self,map,filename):
+        with open(filename, "r", encoding='utf-8') as file:
+            aa = json.loads(file.read())
+            file.seek(0)
+            cache = json.load(file)  # 与 json.loads(f.read())
+        #print(cache)
+        for position in cache['positions']:
+            map.add_position(position)
 

@@ -1,6 +1,6 @@
 from enum import IntEnum
 import json
-
+from position import City
 
 class Mtype(IntEnum):
     GRASS = 1
@@ -8,6 +8,7 @@ class Mtype(IntEnum):
     MONTAIN1 = 11
     WALL1 = 31
     WALL2 = 32
+    VILLAGE = 221
     HERO = 255
 
 
@@ -30,6 +31,7 @@ class Map(object):
         self.view_y = 0
         self.init_map(setting,map_name)#读入地图数据
         self.persons = []
+        self.positions = []
 
     def set_node(self,posx,posy,type):
         self.node[posx][posy] = type
@@ -66,6 +68,11 @@ class Map(object):
         obj.posx_float = obj.posx * self.block_len
         obj.posy_float = obj.posy * self.block_len
         self.persons.append(obj)
+
+    def add_position(self,position):
+        new_position = City(position['posx'],position['posy'],position['id'],position['scale'],position['type'],position['name'])
+        new_position.update_img()
+        self.positions.append(new_position)
 
     def init_map(self,setting,filename):
         with open(filename, "r", encoding='utf-8') as file:

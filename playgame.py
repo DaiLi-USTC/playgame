@@ -15,6 +15,7 @@ def new_start(setting,screen):
     while True:
         if world.me.motion != Motion.NOTHING:#若主角行动中
             world.me.update_action(world.map,setting)#更新主角状态
+            world.me.check(world.map.positions,world.map.persons)
             for person in world.map.persons:
                 if person == world.me:
                     continue

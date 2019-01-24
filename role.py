@@ -22,7 +22,7 @@ class Role(object):
         self.directing_num = 0  #角色指令序列数目
         self.directing = []
         self.img = None
-        self.main_role_flag = False #主角光环
+        #self.main_role_flag = False #主角光环
         self.road_drag = 1 #受到道路的阻力
         self.speed = 1.0
 
@@ -170,10 +170,7 @@ class Role(object):
             self.road_drag = world.map.node[self.posx][self.posy].r_w + world.map.node[self.posx + 1][self.posy].l_w
             self.posx += 1
             self.motion_param = Motion.DIREC_RIGHT
-        else:
-            return False
-        world.should_add_time = 1
-        return True
+
 
     def move_to(self,posx,posy,map):#瞬移，一般作弊模式或调试模式用，某些技能下也可用
         if posx>=0 and posx< map.map_width and posy>=0 and posy < map.map_height:
@@ -189,6 +186,35 @@ class Role(object):
 
     def check(self):
         print('我叫%s，我在位置(%d,%d)，我%d级了,我有%d金币' % (self.name, self.posx, self.posy, self.rank, self.money))
+
+class Main_role(Role):
+    def __init__(self, posx, posy, name):
+        Role.__init__(self,posx,posy,name)
+        self.meet_role = False
+        self.meet_position = False
+
+    def check(self,positions,roles):#检测相遇
+        #if not self.meet_role:
+        meet_role_num = 0
+        meet_position_num = 0
+        for role in roles:
+            if role != self and role.posx == self.posx and role.posy == self.posy:
+                if not self.meet_role:
+                    print('与',role.name,'相遇')
+                    self.meet_role = True
+                meet_role_num += 1
+        #if not self.meet_position:
+        for position in positions:
+            if position.posx == self.posx and position.posy == self.posy:
+                if not self.meet_position:
+                    print('抵达',position.name)
+                    self.meet_position = True
+                meet_position_num += 1
+        if not meet_role_num:
+            self.meet_role = False
+        if not meet_position_num:
+            self.meet_position = False
+
 
 class NPC(Role):
     def __init__(self,posx,posy,name):

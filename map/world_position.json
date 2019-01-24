@@ -1,0 +1,20 @@
+{
+    "positions": [
+        {
+            "posx": 15,
+            "posy": 15,
+			"id": 1,
+            "scale": 1,
+			"type": 1,
+            "name": "穆阳"
+        },
+		{
+            "posx": 8,
+            "posy": 26,
+			"id": 2,
+            "scale": 1,
+			"type": 1,
+            "name": "宁浦"			
+        }
+    ]
+}
